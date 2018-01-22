@@ -522,6 +522,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.maxmikheev.CountryPicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CountryPicker/CountryCode-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -534,6 +535,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.maxmikheev.CountryPicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CountryPicker/CountryCode-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

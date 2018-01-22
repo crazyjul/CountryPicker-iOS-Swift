@@ -55,11 +55,11 @@ class CountryPicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource 
     func countryNamesByCode() -> [Country] {
         var countries = [Country]()
         
-        for code in NSLocale.ISOCountryCodes() {
-            let countryName = NSLocale.currentLocale().displayNameForKey(NSLocaleCountryCode, value: code)
+        for code in NSLocale.isoCountryCodes {
+            let countryName = ( Locale.current as NSLocale).displayName(forKey:NSLocale.Key.countryCode, value: code)
             
             let phoneNumberUtil = NBPhoneNumberUtil.sharedInstance()
-            let phoneCode: String? = "+\(phoneNumberUtil.getCountryCodeForRegion(code))"
+            let phoneCode: String? = "+\(phoneNumberUtil?.getCountryCode(forRegion:code) ?? 0)"
             
             if phoneCode != "+0" {
                 let country = Country(code: code, name: countryName, phoneCode: phoneCode)
@@ -67,39 +67,46 @@ class CountryPicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource 
             }
         }
         
-        countries = countries.sort({ $0.name < $1.name })
+        countries.sort(by:
+        {
+            guard let first: String = $0.name else { return true }
+            guard let second: String = $1.name else { return false }
+
+            return first < second
+        })
         
         return countries
     }
     
     // MARK: - Picker Methods
-
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1;
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return countries.count
     }
     
-    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         var resultView: CountryView
         
         if view == nil {
-            resultView = (NSBundle.mainBundle().loadNibNamed("CountryView", owner: self, options: nil)[0] as! CountryView)
+            resultView = (Bundle.main.loadNibNamed("CountryView", owner: self, options: nil)![0] as! CountryView)
         } else {
             resultView = view as! CountryView
         }
         
-        resultView.setup(countries[row])
+        resultView.setup(country: countries[row])
         
         return resultView
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let country = countries[row]
         if let countryPhoneCodeDelegate = countryPhoneCodeDelegate {
-            countryPhoneCodeDelegate.countryPhoneCodePicker(self, didSelectCountryCountryWithName: country.name!, countryCode: country.code!, phoneCode: country.phoneCode!)
+            countryPhoneCodeDelegate.countryPhoneCodePicker(picker:self, didSelectCountryCountryWithName: country.name!, countryCode: country.code!, phoneCode: country.phoneCode!)
         }
     }
 }

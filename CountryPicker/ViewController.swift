@@ -7,11 +7,10 @@ class ViewController: UIViewController, CountryPhoneCodePickerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let locale = NSLocale.currentLocale()
-        let code = locale.objectForKey(NSLocaleCountryCode) as! String
+        let code = (Locale.current as NSLocale).object(forKey:NSLocale.Key.countryCode) as! String
         
         countryPhoneCodePicker.countryPhoneCodeDelegate = self
-        countryPhoneCodePicker.setCountry(code)
+        countryPhoneCodePicker.setCountry(code:code)
     }
     
     // MARK: - CountryPhoneCodePicker Delegate
